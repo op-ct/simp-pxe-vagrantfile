@@ -40,7 +40,7 @@ Vagrant.configure("2") do |c|
                     '--cpus', '2',
                     '--natdnshostresolver1', 'on',
                     # this is to stop VirtualBox from blocking ALSA
-                    '--audio', 'none',
+                    '--audio', 'null',
                    ]
 
 
@@ -52,9 +52,12 @@ Vagrant.configure("2") do |c|
       vb.customize ['modifyvm', :id, '--vrdeproperty', 'Security/ServerPrivateKey=/etc/pki/simp_apps/packer/packer-vagrant.pem']
     end
 
-       v.vm.provision 'file', source: './shared/tftpboot.pp', destination: '/vagrant/tftpboot.pp'
-       v.vm.provision 'shell',
-                      name: 'set up local internet and classify server21',
+       v.vm.provision 'upload_tftpboot.pp',
+                      type: 'file',
+                      source: './shared/tftpboot.pp',
+                      destination: '/vagrant/tftpboot.pp'
+       v.vm.provision 'set up local internet and classify server21',
+                      type: 'shell',
                       upload_path: '/vagrant/vagrant-shell.sh',
                       inline: <<-EOCMD
 #!/bin/bash
@@ -70,7 +73,7 @@ classes:
 - simp_gitlab
 EEE
 
-mv -f /vagrant/tftpboot.pp /etc/puppetlabs/code/environments/simp/modules/site/tftpboot.pp
+cat /vagrant/tftpboot.pp > /etc/puppetlabs/code/environments/simp/modules/site/manifests/tftpboot.pp && echo ============YES || echo ==========NO
 echo 'site::tftpboot::ip: 192.168.102.7' >> /etc/puppetlabs/code/environments/simp/hieradata/default.yaml
 
 for cmd in chown chmod chcon; do
