@@ -1,0 +1,19 @@
+{
+  "builders": [
+    {
+      "type": "virtualbox-ovf",
+      "source_path": "empty_box.ovf",
+      "vm_name": "empty_box",
+      "guest_additions_mode": "disable",
+      "virtualbox_version_file": "",
+      "communicator": "none"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "keep_input_artifact": false,
+      "compression_level": 1
+    }
+  ]
+}
