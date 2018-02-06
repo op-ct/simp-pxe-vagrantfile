@@ -52,7 +52,7 @@ Vagrant.configure("2") do |c|
       vb.customize ['modifyvm', :id, '--vrdeproperty', 'Security/ServerPrivateKey=/etc/pki/simp_apps/packer/packer-vagrant.pem']
     end
 
-       v.vm.provision 'file', source: './tftpboot.pp', destination: '/vagrant/tftpboot.pp'
+       v.vm.provision 'file', source: './shared/tftpboot.pp', destination: '/vagrant/tftpboot.pp'
        v.vm.provision 'shell',
                       name: 'set up local internet and classify server21',
                       upload_path: '/vagrant/vagrant-shell.sh',
