@@ -72,16 +72,33 @@ Vagrant.configure('2') do |c|
                    inline: <<-EOCMD
 #!/bin/bash
 
-bash /vagrant/scripts/enable_nat_nic_during_kickstart.sh
-bash /vagrant/scripts/add_helpers_to_bashrc.sh
+export log_dir=/vagrant/logs/provisioning
+
+run_scripts()
+{
+  mkdir -p "${log_dir}"
+  for script in "${@}"; do
+    bash "/vagrant/scripts/${script}" |& tee "${log_dir}/${script}"
+  done
+}
+
+run_scripts enable_nat_nic_during_kickstart.sh add_helpers_to_bashrc.sh
 
 set -x
-# TODO: possiblity for a more robust fix: simp-packer
-ip route add default via 10.0.2.3
 
-bash /vagrant/scripts/deliver_new_puppet_content.sh
+# The IP below is the standard gateway address for VirtualBox NAT interfaces,
+# which by default use 10.0.2.0/24 with a gateway at 10.0.2.2 (subnet_root+2)
+#
+#    see: https://www.virtualbox.org/manual/ch09.html#idm8372
+#
+ip route add default via "${SIMP_VIRTUALBOX_nat_gateway:-10.0.2.2}"
 
-puppet agent -t
+# TODO: It's possible (but unlikely) that the VM is using a customized gateway,
+#       so there may need to be more logic before assuming 10.0.2.2
+
+run_scripts deliver_new_puppet_content.sh
+
+puppet agent -t |& tee "${log_dir}/puppet-agent.log"
 true
          EOCMD
   end
