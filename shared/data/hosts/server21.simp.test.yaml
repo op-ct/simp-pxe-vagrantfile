@@ -1,0 +1,30 @@
+---
+iptables::ports:
+ defaults:
+   apply_to: ipv4
+ 4567:
+   proto: tcp
+ 4568:
+   proto: tcp
+ 4569:
+   proto: tcp
+ 6419:
+   proto: tcp
+ 7000:
+   proto: tcp
+ 7001:
+   proto: tcp
+ 7001:
+   proto: tcp
+ 7002:
+   proto: tcp
+ 7003:
+   proto: tcp
+ 7004:
+   proto: tcp
+ 7777:
+   proto: tcp
+ 8443:
+   proto: tcp
+ 8080:
+   proto: tcp

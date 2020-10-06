@@ -1,0 +1,49 @@
+# ------------------------------------------------------------------------------
+# aliases and env vars that help us get around faster:
+#
+# Examples:
+#
+#   ppm   # cd to puppet production environment modules/ directory
+#   pph   # cd to puppet production environment data/ directory
+#   ppkd  # cd to puppet production environment keydist/ directory
+#
+#   rsync -av new_module $ppm/ # copy module into production directory
+#
+# ------------------------------------------------------------------------------
+
+
+PUPPET_PRODUCTION_ENVIRONMENT=production
+PUPPET_PRODUCTION_DIR="/etc/puppetlabs/code/environments/${PUPPET_PRODUCTION_ENVIRONMENT}"
+PUPPET_PRODUCTION_VARDIR="/var/simp/environments/${PUPPET_PRODUCTION_ENVIRONMENT}"
+PUPPET_PRODUCTION_SERVER_SIMP_DIR="/opt/puppetlabs/server/data/puppetserver/simp/environments/${PUPPET_PRODUCTION_ENVIRONMENT}"
+PUPPET_PRODUCTION_MODULES_DIR=${PUPPET_PRODUCTION_DIR}/modules
+PUPPET_PRODUCTION_HIERA_DIR=${PUPPET_PRODUCTION_DIR}/data
+PUPPET_PRODUCTION_MANIFESTS_DIR=${PUPPET_PRODUCTION_DIR}/manifests
+PUPPET_PRODUCTION_MODULES_SITE_MANIFESTS_DIR="${PUPPET_PRODUCTION_MODULES_DIR}/site/manifests"
+PUPPET_PRODUCTION_FAKE_CA="${PUPPET_PRODUCTION_VARDIR}/FakeCA"
+PUPPET_PRODUCTION_KEYDIST_DIR="${PUPPET_PRODUCTION_VARDIR}/site_files/pki_files/files/keydist"
+
+export ppdir="${PUPPET_PRODUCTION_DIR}"
+export pph="${PUPPET_PRODUCTION_HIERA_DIR}"
+export pphh="${PUPPET_PRODUCTION_HIERA_DIR}/hosts"
+export pphg="${PUPPET_PRODUCTION_HIERA_DIR}/hostgroups"
+export ppm="${PUPPET_PRODUCTION_MODULES_DIR}"
+export ppn="${PUPPET_PRODUCTION_MANIFESTS_DIR}"
+export ppms="${PUPPET_PRODUCTION_MODULES_SITE_MANIFESTS_DIR}"
+export ppv="${PUPPET_PRODUCTION_VARDIR}"
+export ppfca="${PUPPET_PRODUCTION_FAKE_CA}"
+export ppssd="${PUPPET_PRODUCTION_SERVER_SIMP_DIR}"
+export ppkd="${PUPPET_PRODUCTION_KEYDIST_DIR}"
+
+alias ppdir="cd ${ppdir}"
+alias pph="cd ${pph}"
+alias pphh="cd ${pphh}"
+alias pphg="cd ${pphg}"
+alias ppm="cd ${ppm}"
+alias ppn="cd ${ppn}"
+alias ppms="cd ${ppms}"
+alias ppv="cd ${ppv}"
+alias ppfca="cd ${ppfca}"
+alias ppssd="cd ${ppssd}"
+alias ppkd="cd ${ppkd}"
+

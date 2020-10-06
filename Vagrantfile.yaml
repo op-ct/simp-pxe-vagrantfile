@@ -1,0 +1,10 @@
+---
+simp_puppetserver_box_name: 'server-6.5.0-Alpha.el7-CentOS-7.0.x86-64'
+
+simp_puppetserver_json_url: 'file:///var/simpdev/ctessmer/vagrant/simpci/boxes/server-6.5.0-Alpha.el7-CentOS-7.0.x86-64.json'
+
+x509:
+  cacerts_file: '/etc/pki/simp/x509/cacerts/cacerts.pem'
+  server_cert:  '/etc/pki/simp_apps/packer/packer-vagrant.pub'
+  server_private_key: '/etc/pki/simp_apps/packer/packer-vagrant.pem'
+

@@ -1,7 +1,8 @@
 # Note the difference in the `extra` arguments here.
-class site::tftpboot($ip=$facts['ipaddress']) {
+class profile::tftpboot($ip=$facts['ipaddress']) {
   include '::tftpboot'
 
+  # FIXME - only kicks client swith same OS as puppetmaster
   case $facts['os']['release']['major'] {
   '7': { tftpboot::linux_model { 'el7_x86_64':
         kernel => 'centos-7-x86_64/vmlinuz',
