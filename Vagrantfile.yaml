@@ -8,3 +8,10 @@ x509:
   server_cert:  '/etc/pki/simp_apps/packer/packer-vagrant.pub'
   server_private_key: '/etc/pki/simp_apps/packer/packer-vagrant.pem'
 
+os_iso_files:
+  - '/net/ISO/Distribution_ISOs/CentOS-8.2.2004-x86_64-dvd1.iso'
+  - '/net/ISO/Distribution_ISOs/CentOS-7-x86_64-DVD-2003.iso'
+#  - '/net/ISO/Distribution_ISOs/CentOS-6.10-x86_64-bin-DVD1.iso'
+#  - '/net/ISO/Distribution_ISOs/CentOS-6.10-x86_64-bin-DVD2.iso'
+#
+isos_dir: '/var/simp/ISOs'

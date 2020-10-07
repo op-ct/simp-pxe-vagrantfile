@@ -85,6 +85,24 @@ Vagrant.configure("2") do |config|
                      destination: "/vagrant/#{source_dir}"
     end
 
+    if SIMP_OPTIONS['os_iso_files'] && !SIMP_OPTIONS['os_iso_files'].empty?
+      isos_dir = SIMP_OPTIONS['isos_dir'] || '/var/simp/ISOs'
+      v.vm.provision "Ensure #{isos_dir} dir exists",
+                     type: 'shell',
+                     upload_path: '/vagrant/.ensure-isos-dir-exists.sh',
+                     inline: "mkdir -p #{isos_dir} && chown vagrant #{isos_dir}"
+      SIMP_OPTIONS['os_iso_files'].each do |iso_file|
+        unless File.file? iso_file
+          warn "ISO FILE NOT FOUND (skipping upload): #{iso_file}"
+          next
+        end
+        v.vm.provision "Upload #{iso_file} to #{isos_dir}",
+                       type: 'file',
+                       source: iso_file,
+                       destination: "#{isos_dir}/"
+      end
+    end
+
     script_num = 0
     base_script_dir = File.join(__dir__,'shared','')
     Dir[File.join( base_script_dir,'scripts.d','*.{sh,bash,rb}')].each do |script|
