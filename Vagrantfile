@@ -117,38 +117,39 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define :pxe_client, autostart: false do |pxe_client|
-    pxe_client.vm.box = 'empty_box'
-    pxe_client.vm.boot_timeout = 3600
-    pxe_client.vm.network :private_network,
-                          ip:                  "192.168.103.21",
-                          netmask:             "255.255.255.0",
-                          name:                "vboxnet2",
-                          mac:                 "aabbcccc0021",
-                          auto_config:         false,
-                          virtualbox__intnet:  'pxe_network'
+  [8,7,6].each do |el|
+    config.vm.define "pxe#{el}".to_sym, autostart: false do |pxe_client|
+      pxe_client.vm.box = 'empty_box'
+      pxe_client.vm.boot_timeout = 3600
+      pxe_client.vm.network :private_network,
+                            ip:                  "192.168.103.2#{el}",
+                            netmask:             "255.255.255.0",
+                            name:                "vboxnet2",
+                            mac:                 "aabbcccc002#{el}",
+                            auto_config:         false,
+                            virtualbox__intnet:  'pxe_network'
 
-    pxe_client.vm.network "forwarded_port", guest: 443, host: 8443
-    pxe_client.vm.network "forwarded_port", guest: 80, host: 8080
-    pxe_client.vm.provider :virtualbox do |vb|
-      # needs to be *over* 1024 for EL7
-      vb.memory = '2048'
-      vb.cpus   = '2'
+      pxe_client.vm.network "forwarded_port", guest: 443, host: 8443
+      pxe_client.vm.network "forwarded_port", guest: 80, host: 8080
+      pxe_client.vm.provider :virtualbox do |vb|
+        # needs to be *over* 1024 for EL7
+        vb.memory = '2048'
+        vb.cpus   = '2'
+        vb.customize [
+          'modifyvm', :id,
+          '--nic1', 'intnet',
+          '--intnet1', 'pxe_network',
+          '--macaddress1', "aabbcccc002#{el}",
+          '--boot1', 'disk', # boot from disk after pxe kickstart
+          '--boot2', 'net',
+          '--boot3', 'none',
+          '--boot4', 'none'
+        ]
 
-      vb.customize [
-        'modifyvm', :id,
-        '--nic1', 'intnet',
-        '--intnet1', 'pxe_network',
-        '--macaddress1', 'aabbcccc0021',
-        '--boot1', 'disk', # boot from disk after pxe kickstart
-        '--boot2', 'net',
-        '--boot3', 'none',
-        '--boot4', 'none'
-      ]
-
-      vb.customize ['modifyvm', :id, '--vrde', 'on']
-      vb.customize ['modifyvm', :id, '--vrdeauthtype', 'null']
-      vbox_fips_vrde_config(vb, FIPS_MODE_ON_HOST)
+        vb.customize ['modifyvm', :id, '--vrde', 'on']
+        vb.customize ['modifyvm', :id, '--vrdeauthtype', 'null']
+        vbox_fips_vrde_config(vb, FIPS_MODE_ON_HOST)
+      end
     end
   end
 end
