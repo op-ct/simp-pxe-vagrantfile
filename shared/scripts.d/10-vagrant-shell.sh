@@ -14,7 +14,7 @@ for i in /root/.bashrc.*; do
   fi
 done
 
-echo 'profile::tftpboot::ip: 192.168.103.7' >> "$ppdir"/data/default.yaml
+#echo 'profile::tftpboot::ip: 192.168.103.7' >> "$ppdir"/data/default.yaml
 
 for cmd in chown chmod chcon; do
   ${cmd} -R --reference="$ppdir" "$ppdir/site" "$ppdir/data"
