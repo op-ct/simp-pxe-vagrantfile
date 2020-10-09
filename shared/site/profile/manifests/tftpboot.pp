@@ -8,7 +8,7 @@ class profile::tftpboot(
   tftpboot::linux_model { 'el8_x86_64':
     kernel => 'centos-8-x86_64/vmlinuz',
     initrd => 'centos-8-x86_64/initrd.img',
-    ks     => "https://10.0.71.106/ks/pupclient_x86_64__el8.cfg",
+    ks     => "https://${ip}/ks/pupclient_x86_64__el8.cfg",
     extra  => "inst.noverifyssl"
   }
 
