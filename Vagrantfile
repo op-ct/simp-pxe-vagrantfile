@@ -121,16 +121,6 @@ Vagrant.configure("2") do |config|
     config.vm.define "pxe#{el}".to_sym, autostart: false do |pxe_client|
       pxe_client.vm.box = 'empty_box'
       pxe_client.vm.boot_timeout = 3600
-      pxe_client.vm.network :private_network,
-                            ip:                  "192.168.103.2#{el}",
-                            netmask:             "255.255.255.0",
-                            name:                "vboxnet2",
-                            mac:                 "aabbcccc002#{el}",
-                            auto_config:         false,
-                            virtualbox__intnet:  'pxe_network'
-
-      pxe_client.vm.network "forwarded_port", guest: 443, host: 8443
-      pxe_client.vm.network "forwarded_port", guest: 80, host: 8080
       pxe_client.vm.provider :virtualbox do |vb|
         # needs to be *over* 1024 for EL7
         vb.memory = '2048'
@@ -148,6 +138,7 @@ Vagrant.configure("2") do |config|
 
         vb.customize ['modifyvm', :id, '--vrde', 'on']
         vb.customize ['modifyvm', :id, '--vrdeauthtype', 'null']
+        vb.customize ['modifyvm', :id, '--vrdeport', '5951-5999,3389-3399']
         vbox_fips_vrde_config(vb, FIPS_MODE_ON_HOST)
       end
     end
