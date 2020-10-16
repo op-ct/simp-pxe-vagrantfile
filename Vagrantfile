@@ -1,3 +1,6 @@
+#
+# These don't come up by default; wait for the puppetserver to load, `vagrant
+# up` the clients you want to testV
 # -*- mode: ruby -*-
 # vim: set syntax=ruby ts=2 sw=2 et:
 
@@ -117,21 +120,21 @@ Vagrant.configure("2") do |config|
     end
   end
 
+  # PXE boot clients
   [8,7,6].each do |el|
     config.vm.define "pxe#{el}".to_sym, autostart: false do |pxe_client|
       pxe_client.vm.box = 'empty_box'
       pxe_client.vm.boot_timeout = 3600
       pxe_client.vm.provider :virtualbox do |vb|
-        # needs to be *over* 1024 for EL7
-        vb.memory = '2048'
+        vb.memory = '2048'  # needs to be *over* 1024 for EL7
         vb.cpus   = '2'
         vb.customize [
           'modifyvm', :id,
           '--nic1', 'intnet',
           '--intnet1', 'pxe_network',
           '--macaddress1', "aabbcccc002#{el}",
-          '--boot1', 'disk', # boot from disk after pxe kickstart
-          '--boot2', 'net',
+          '--boot1', 'disk',  # <- starts empty, boots after kickstart loads OS
+          '--boot2', 'net',   # <- falls through to kickstart when disk is empty
           '--boot3', 'none',
           '--boot4', 'none'
         ]
