@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ppdir=/etc/puppetlabs/code/environments/production
 vgdir=/vagrant

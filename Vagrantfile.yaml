@@ -1,17 +1,27 @@
 ---
-simp_puppetserver_box_name: 'server-6.5.0-Alpha.el7-CentOS-7.0.x86-64'
+# SIMP vagrant box URL and box name
+#   Points to files created by simp-packer's `rake simp:packer:matrix`
+# ------------------------------------------------------------------------------
+simp_puppetserver_box_name: 'server-6.5.0-Alpha-el7-CentOS-7.0-x86_64-fips-bios'
+simp_puppetserver_json_url: 'file:///var/simpdev/ctessmer/vagrant/simpci/boxes/server-6.5.0-Alpha-el7-CentOS-7.0-x86_64-fips-bios.json'
 
-simp_puppetserver_json_url: 'file:///var/simpdev/ctessmer/vagrant/simpci/boxes/server-6.5.0-Alpha.el7-CentOS-7.0.x86-64.json'
-
+# ------------------------------------------------------------------------------
 x509:
   cacerts_file: '/etc/pki/simp/x509/cacerts/cacerts.pem'
   server_cert:  '/etc/pki/simp_apps/packer/packer-vagrant.pub'
   server_private_key: '/etc/pki/simp_apps/packer/packer-vagrant.pem'
 
+
+# ISO files to upload to the puppetserver and unpack
+# ------------------------------------------------------------------------------
 os_iso_files:
-  - '/net/ISO/Distribution_ISOs/CentOS-8.2.2004-x86_64-dvd1.iso'
-  - '/net/ISO/Distribution_ISOs/CentOS-7-x86_64-DVD-2003.iso'
-#  - '/net/ISO/Distribution_ISOs/CentOS-6.10-x86_64-bin-DVD1.iso'
-#  - '/net/ISO/Distribution_ISOs/CentOS-6.10-x86_64-bin-DVD2.iso'
-#
+  # '<absolute path to ISO file>' : '<version number to use with unpack_dvd>'
+  '/net/ISO/Distribution_ISOs/CentOS-8.2.2004-x86_64-dvd1.iso': '8.2.2004'
+  '/net/ISO/Distribution_ISOs/CentOS-7-x86_64-DVD-2003.iso':    '7.8.2003'
+  '/net/ISO/Distribution_ISOs/CentOS-6.10-x86_64-bin-DVD1.iso': '6.10'
+  '/net/ISO/Distribution_ISOs/CentOS-6.10-x86_64-bin-DVD2.iso': '6.10'
+
+# ISOs directory on SIMP server (created if it doesn't exist)
+# OS ISO files will be uploaded here
+# ------------------------------------------------------------------------------
 isos_dir: '/var/simp/ISOs'
