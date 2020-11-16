@@ -34,6 +34,27 @@ def vbox_fips_vrde_config(vb, fips_mode_on_host)
   end
 end
 
+def pxe_client_config(pxe_client, mac)
+  pxe_client.vm.provider :virtualbox do |vb|
+    vb.memory = '2048'  # needs to be *over* 1024 for el7
+    vb.cpus   = '2'
+    vb.customize [
+      'modifyvm', :id,
+      '--nic1', 'intnet',
+      '--intnet1', 'pxe_network',
+      '--macaddress1', "aabbcccc002#{mac}",
+      '--boot1', 'disk',  # <- starts empty, boots after kickstart loads os
+      '--boot2', 'net',   # <- falls through to kickstart when disk is empty
+      '--boot3', 'none',
+      '--boot4', 'none'
+    ]
+
+    vb.customize ['modifyvm', :id, '--vrde', 'on']
+    vb.customize ['modifyvm', :id, '--vrdeauthtype', 'null']
+    vb.customize ['modifyvm', :id, '--vrdeport', '5951-5999,3389-3399']
+    vbox_fips_vrde_config(vb, FIPS_MODE_ON_HOST)
+  end
+end
 
 Vagrant.configure("2") do |config|
   config.ssh.insert_key = false
@@ -44,7 +65,8 @@ Vagrant.configure("2") do |config|
 
     # URL where box will be fetched if it doesn't already exist on the system
     v.vm.box_url = SIMP_OPTIONS['simp_puppetserver_json_url']
-    v.vm.box_check_update = 'false'
+    v.vm.box_check_update = 'true'
+    v.ssh.connect_timeout = 600  #
 
     # This creats the `/vagrant` folder on the SUT, which gives the vagrant SSH
     # user a place to upload and exec `shell` provisioner files.  SIMP locks
@@ -119,32 +141,24 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  # PXE boot clients
   [8,7,6].each do |el|
+    # PXE boot clients
     config.vm.define "pxe#{el}".to_sym, autostart: false do |pxe_client|
       pxe_client.vm.boot_timeout = 3600
-      pxe_client.ssh.connect_timeout = 600  # Optional; Requires Vagrant 2.2.8+
-      pxe_client.vm.box = 'empty_box'
+      pxe_client.ssh.connect_timeout = 600  # optional; requires vagrant 2.2.8+
+      pxe_client.vm.box = 'onyxpoint/empty'
+      pxe_client_config(pxe_client, el)
+    end
 
-      pxe_client.vm.provider :virtualbox do |vb|
-        vb.memory = '2048'  # needs to be *over* 1024 for EL7
-        vb.cpus   = '2'
-        vb.customize [
-          'modifyvm', :id,
-          '--nic1', 'intnet',
-          '--intnet1', 'pxe_network',
-          '--macaddress1', "aabbcccc002#{el}",
-          '--boot1', 'disk',  # <- starts empty, boots after kickstart loads OS
-          '--boot2', 'net',   # <- falls through to kickstart when disk is empty
-          '--boot3', 'none',
-          '--boot4', 'none'
-        ]
-
-        vb.customize ['modifyvm', :id, '--vrde', 'on']
-        vb.customize ['modifyvm', :id, '--vrdeauthtype', 'null']
-        vb.customize ['modifyvm', :id, '--vrdeport', '5951-5999,3389-3399']
-        vbox_fips_vrde_config(vb, FIPS_MODE_ON_HOST)
-      end
+    # UEFI PXE boot clients
+    # uefi8 = 3
+    # uefi7 = 2
+    # uefi6 = 1
+    config.vm.define "uefi#{el}".to_sym, autostart: false do |pxe_client|
+      pxe_client.vm.boot_timeout = 3600
+      pxe_client.ssh.connect_timeout = 600  # optional; requires vagrant 2.2.8+
+      pxe_client.vm.box = 'anexia/uefi-ipxe'
+      pxe_client_config(pxe_client, el-5)
     end
   end
 end

@@ -4,7 +4,19 @@
       String[1]               $yum_server_ip,  # The IP address of your YUM server
       # The LINUX Distribution you are kickstarting
       Enum['RedHat','CentOS','#LINUXDIST#'] $linux_dist = 'CentOS',
+      Boolean $fips = true,
+      Boolean $efi = false,
 | -%>
+<%
+  $bootloader_args = $efi ? {
+    false   => '--location=mbr',
+    default => '',
+  }
+  $fips_args = $fips ? {
+    true    => 'fips=1',
+    default => 'fips=0',
+  }
+-%>
 #
 # Use the following Ruby code to generate your rootpw hash:
 #   ruby -r 'digest/sha2' -e 'puts "password".crypt("$6$" + rand(36**8).to_s(36))'
@@ -37,7 +49,7 @@ authconfig --enableshadow --passalgo=sha512
 # If this affects your OS, remove the `fips=1 ` string from the bootloader
 # line's `--append` argument below (this will not affect the FIPS Mode of the
 # final system):
-bootloader --location=mbr --append="fips=1 console=ttyS1,57600 console=tty1" --iscrypted --password=<%= $boot_pass_hash %>
+bootloader <%= $bootloader_args %> --append="<%= fips_args %> console=ttyS1,57600 console=tty1" --iscrypted --password=<%= $boot_pass_hash %>
 rootpw --iscrypted <%= $root_pass_hash %>
 firewall --enabled --ssh
 firstboot --disable
@@ -65,10 +77,10 @@ aide
 bzip2
 chrony
 crontabs
-#dracut
+<%= if $fips { '#' } %> dracut
 ## Uncomment the previous line and comment out the line below to disable
 ## checking FIPS compliance at boot.
-dracut-fips
+<%= unless $fips { '#' } %> dracut-fips
 fipscheck
 git
 grub2-efi-x64

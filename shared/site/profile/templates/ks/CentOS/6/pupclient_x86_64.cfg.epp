@@ -4,7 +4,19 @@
       String[1]               $yum_server_ip,  # The IP address of your YUM server
       # The LINUX Distribution you are kickstarting
       Enum['RedHat','CentOS','#LINUXDIST#'] $linux_dist = 'CentOS',
+      Boolean $fips = true,
+      Boolean $efi = false,
 | -%>
+<%
+  $bootloader_args = $efi ? {
+    false   => '--location=mbr',
+    default => '',
+  }
+  $fips_args = $fips ? {
+    true    => 'fips=1',
+    default => 'fips=0',
+  }
+-%>
 # Required:
 #   Replace the following strings in this file:
 #     * <%= $boot_pass_hash %> - Your SHA-512 hashed bootloader password
@@ -36,9 +48,7 @@ authconfig --enableshadow --passalgo=sha512
 
 # anaconda has known issues when fips is turned on during boot, so it (fips=1)  was remove from bootloader line.
 # see url: https://groups.google.com/forum/?fromgroups#!topic/simp-announce/3pBQDZl1OVc
-bootloader --location=mbr --iscrypted --password=<%= $boot_pass_hash %>
-## Comment out the line above and uncomment the following line to use UEFI boot
-#bootloader --iscrypted --password=<%= $boot_pass_hash %>
+bootloader <%= $bootloader_args %> --iscrypted --password=<%= $boot_pass_hash %>
 
 rootpw --iscrypted <%= $root_pass_hash %>
 zerombr
@@ -126,10 +136,10 @@ rsyslog7
 lsof
 vim-enhanced
 -sendmail
-# dracut
-## Uncomment the line above and comment out the following to prevent boot-time
-## FIPS checks.
-dracut-fips
+<%= if $fips { '#' } %> dracut
+## Uncomment the previous line and comment out the line below to disable
+## checking FIPS compliance at boot.
+<%= unless $fips { '#' } %> dracut-fips
 fipscheck
 # Puppet stuff
 puppet

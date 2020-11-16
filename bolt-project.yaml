@@ -1,14 +1,3 @@
 ---
 name: simp_pxe_test
-
 save-rerun: false
-
-# Would be nice if this worked here, but it only works for bolt-defaults.yaml:
-#
-#  inventory-config:
-#    local:
-#      tmpdir: "/tmp/bolt"
-#    ssh:
-#      tmpdir: "/vagrant/tmp"
-#      run-as: "root"
-

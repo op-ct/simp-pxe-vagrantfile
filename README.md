@@ -51,11 +51,16 @@ If you are using RVM, make sure to `rvm use system` to disable it before running
    vagrant up pxe8
    vagrant up pxe7
    vagrant up pxe6
+   vagrant up uefi8
+   vagrant up uefi7
+   vagrant up uefi6
    ```
 
 ## Reference
 
 ## Limitations
+
+* Vagrant can't SSH into an EL6 puppetserver
 
 ## Development
 
