@@ -49,7 +49,7 @@ authconfig --enableshadow --passalgo=sha512
 # If this affects your OS, remove the `fips=1 ` string from the bootloader
 # line's `--append` argument below (this will not affect the FIPS Mode of the
 # final system):
-bootloader <%= $bootloader_args %> --append="<%= fips_args %> console=ttyS1,57600 console=tty1" --iscrypted --password=<%= $boot_pass_hash %>
+bootloader <%= $bootloader_args %> --append="<%= $fips_args %> console=ttyS1,57600 console=tty1" --iscrypted --password=<%= $boot_pass_hash %>
 rootpw --iscrypted <%= $root_pass_hash %>
 firewall --enabled --ssh
 firstboot --disable
