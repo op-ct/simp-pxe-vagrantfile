@@ -1,7 +1,7 @@
 # Note the difference in the `extra` arguments here.
 class profile::tftpboot(
   Stdlib::IP::Address $ip=$facts['ipaddress'],
-  Boolean   $fips = false,
+  Boolean   $fips = true,
   String[1] $el8_boot_hash = 'grub.pbkdf2.sha512.10000.94454C752918769A415DB7949779653CA87DC7D4B21C4E531F5E53CF16DE397CA8BA8BF758019D5F299717D59E4598040FBA0B3039FA757E033A9ED0E37A7FEF.BA03CF7EAEF494D86C79BBEDDF308C23FD359FC31F63851CE28CDEC0D8B3A278B392136BE8E4F1D9028EC8B90C13908B2438385AA8890E0DF2D1E35CFC6B2788',
   String[1] $el8_root_hash = '$6$58rp5hrn$Rv/tzwlVBS5oHsKXPwcMzohyFzehtOC9HB502E9j8fjPeujf3cd9THmKODO39Y0Fhnimj5AZ.OXu3GByImjDH.',
   String[1] $el6_boot_hash = '6$CxRbPTshtrVhiKe5$zJTrzr7kLP.rvMNJyCz8yOdYNpgIbjMifLTAlH/UADYOFMW9Nflf6SyPvCMEGnBCtP80bmYGLrmD/7nxf2mz/1',

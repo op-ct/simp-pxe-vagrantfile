@@ -2,7 +2,7 @@
 #
 # repodetect.sh - determine kickstart repos based on your OS
 #
-# Usage: repodetect.sh VERSION [KS_SERVER] [LINUX_DIST]
+# Usage: repodetect.sh VERSION [YUM_SERVER] [LINUX_DIST]
 #
 #   VERSION     Major OS version number (e.g., '8', '7', '6')
 #   YUM_SERVER  (Optional) empty, 'local', or a URI of a yum server
@@ -18,7 +18,7 @@ arch="x86_64"
 version="$1"
 yum_server="$2"
 if [ $# -gt 2 ]; then distro="$3"; fi
-if [ "$(uname -m)" != "$arch" ]; then arch="$(uname -m)"; fi
+arch="$(uname -m)" # (e.g., "x86_64")
 
 if [ -z "$version" ]; then
   echo "ERROR: You must pass the major OS VERSION (e.g., '8','7') as the first argument"
@@ -34,7 +34,7 @@ if [ "$distro" == "$unknown" ]; then
   then
     distro=RedHat
   elif grep -q 'CentOS' /etc/redhat-release \
-    || grep -q "url is.*RedHat" /tmp/anaconda.log \
+    || grep -q "url is.*CentOS" /tmp/anaconda.log \
     || [[ "$osline" =~ CentOS ]] \
     || [ -f /tmp/CentOS.osbuild ]
   then

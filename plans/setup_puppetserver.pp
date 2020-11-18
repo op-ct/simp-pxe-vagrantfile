@@ -56,7 +56,7 @@ plan simp_pxe_test::setup_puppetserver(
       out::message("ISO: ${iso_file.basename} (${iso_version})")
       $isos_dir =  $config.dig('isos_dir').lest || { '/var/simp/ISOs' }
       run_command(
-        "/usr/local/bin/unpack_dvd --unpack-pxe --unpack-yum -v '$iso_version' '${isos_dir}/${$iso_file.basename}'",
+        "/usr/bin/test -f '${iso_file}' && /usr/local/bin/unpack_dvd --unpack-pxe --unpack-yum -v '$iso_version' '${isos_dir}/${$iso_file.basename}'",
         $puppetserver,
         "unpack_dvd ${iso_file.basename} ${iso_version}"
       )
